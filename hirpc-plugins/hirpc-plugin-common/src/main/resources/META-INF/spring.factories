@@ -1,0 +1,9 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  dev.hirpc.plugin.spring.SpringUtilAutoConfiguration, \
+  dev.hirpc.plugin.consul.ConsulAutoConfiguration, \
+  dev.hirpc.plugin.db.DBLocalAutoConfiguration,\
+  dev.hirpc.plugin.db.DBRemoteAutoConfiguration, \
+  dev.hirpc.plugin.mybatisplus.MybatisPlusAutoConfiguration, \
+  dev.hirpc.plugin.mongodb.MongoRemoteAutoConfiguration, \
+  dev.hirpc.plugin.redis.RedisRemoteAutoConfiguration, \
+  dev.hirpc.plugin.redis.RedisLocalAutoConfiguration

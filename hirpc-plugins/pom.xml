@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>hirpc-services</artifactId>
+        <groupId>dev.hirpc</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>hirpc-plugins</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>hirpc-plugin-db</module>
+        <module>hirpc-plugin-redis</module>
+        <module>hirpc-plugin-mongo</module>
+<!--        <module>hirpc-plugin-kafka</module>-->
+        <module>hirpc-plugin-common</module>
+        <module>hirpc-plugin-grpc</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>dev.hirpc</groupId>
+            <artifactId>hirpc-common</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+</project>

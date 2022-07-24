@@ -1,0 +1,10 @@
+hirpc:
+  kafka:
+    - name: hirpc_kafka_demo
+      bootstrap-servers:
+        - 127.0.0.1:9092
+#      consumer:
+#        group-id: myGroup
+#        enable-auto-commit: true
+#        auto-commit-interval: 100ms
+#        auto-offset-reset: earliest
