@@ -382,11 +382,11 @@
 
   更多RedisTemplate的操作请自行学习。
 
-+ 最后，依旧在服务子模块下，在应用启动文件的类名上方加入自定义注解。例如：
++ 最后，依旧在服务子模块下，在应用启动文件的类名上方加入自定义注解。**<u>注意：需要在@SpringBootApplication里exclude掉Redis自动配置类，防止配置冲突</u>**。例如：
 
   ```java
   @EnableRedis(defaultSource = RedisSourceName.HIRPC_REDIS, source = {RedisSourceName.HIRPC_REDIS, RedisSourceName.HIRPC_REDIS_CLUSTER, RedisSourceName.HIRPC_REDIS_SENTINEL})
-  @SpringBootApplication
+  @SpringBootApplication(exclude = {RedisAutoConfiguration.class})
   public class DataSourceDemoApp {
   
       public static void main(String[] args) {
@@ -490,7 +490,7 @@
 
   更多MongoTemplate的操作请自行学习。
 
-+ 最后，依旧在服务子模块下，在应用启动文件的类名上方加入自定义注解。**<u>注意：需要在@SpringBootApplication里exclude掉MongoDB自动配置到类，防止配置冲突</u>**。例如：
++ 最后，依旧在服务子模块下，在应用启动文件的类名上方加入自定义注解。**<u>注意：需要在@SpringBootApplication里exclude掉MongoDB自动配置类，防止配置冲突</u>**。例如：
 
   ```java
   @EnableMongoDB(defaultSource = MongoSourceName.HIRPC_MONGO_DEMO, sources = {MongoSourceName.HIRPC_MONGO_DEMO})
@@ -505,3 +505,139 @@
   ```
 
   该注解表明我们将HIRPC_MONGO_DEMO (hirpc_mongo_demo)作为默认MongoDB数据源。
+  
+### 4) Docker镜像打包上传
+
+**[Docker镜像打包上传步骤]:**
+
++ 打包准备
+
+  + 打开项目根目录下的pom.xml文件，在<build> - <pluginManagement> - <plugins>标签下添加插件信息，如下所示：
+
+    ```xml
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>2.2.0.RELEASE</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    ```
+
+  + 进入到相应服务 (provider) 目录下的pom.xml文件，在<build> - <plugins>标签下添加插件信息，如下所示：
+
+    ```xml
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>${start-class}</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    ```
+
+  + 于同一文件内，在<properties>标签下指定${start-class}，如下所示：
+
+    ```xml
+    <properties>
+        <start-class>com.yumontime.provider.LimitationServiceApp</start-class>
+    </properties>
+    ```
+
+  + 此外，进入到该服务的src/main/resources目录下，打开application.yaml文件。<u>**确保consul相关信息配置如下，否则最终docker镜像运行可能会解析url失败并报错。**</u>
+
+    ```yaml
+    cloud:
+      consul:
+        enable: true
+        host: ${CONFIGS_HOST:https://configs.yumontime.com}
+        port: ${CONFIGS_PORT:443}
+    ```
+
++ 生成jar包 (下面以IDEA开发环境为例)  
+
+  + 单击屏幕右侧**[maven]**一栏，找到对应服务 (provider) ，在**[Lifecycle]**内先点击clean清除旧文件，再点击package打包jar包。
+  + 生成jar包位置：位于对应服务目录下的target文件夹内。
+
++ 编辑Dockerfile
+
+  + 进入到相应服务的目录下，新建Dockerfile文件。文件内容如下所示：
+
+    ```dockerfile
+    # 设置本镜像需要使用的基础镜像
+    FROM openjdk:17-oracle
+    
+    # 把jar包添加到镜像中
+    ADD target/provider-yumontime-limitation-1.0.jar /app.jar
+    
+    # 镜像暴露的端口
+    EXPOSE 8888
+    
+    # 容器启动命令
+    ENTRYPOINT ["java","-jar","/app.jar"]
+    
+    # 设置时区
+    ENV TZ=America/Los_Angeles
+    RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+    ```
+
+    注：Docker内部环境也需要使用JDK17。目前Docker只支持openjdk-17，为保证兼容性后期需要封装一个oracle JDK17的基础镜像。
+
++ 命令行进入到相应服务的目录下 (以macOS为例)
+
+  ```
+  cd <where you put your project>/hrpc-java/hirpc-providers/provider-yumontime-limitation
+  ```
+
++ docker build创建docker镜像
+
+  ```
+  docker build -t "uswccr.ccs.tencentyun.com/yumontime/limitationservice:dev-20220628202400" -f Dockerfile .
+  ```
+
+  + 其中，-t后面跟随的参数为容器名称。**<u>容器名和服务名的命名规则</u>**如下：
+
+    + 容器名：
+
+      host id的url + 指定目录 + 服务名
+
+      以本项目为例：uswccr.ccs.tencentyun.com/yumontime/${PROJECT_NAME}
+
+    + 服务名：
+
+      名词+service结尾的一个名称作为服务名
+
+      比如上方例子：limitationservice
+
+  + 此外，**<u>需要注意在执行docker指令时需要运行Docker</u>**。
+
++ 登陆docker仓库
+
+  ```
+  docker login -u <account> --password <password> uswccr.ccs.tencentyun.com
+  ```
+
+  <u>**注意：账号密码需要找Henry索取。**</u>
+
++ docker push把镜像上传仓库
+
+  ```
+  docker push uswccr.ccs.tencentyun.com/yumontime/limitationservice:dev-20220628202400
+  ```
+
++ 最后前往腾讯云的管理界面，检查服务是否运行正常。
