@@ -40,7 +40,7 @@ public class DBRemoteAutoConfiguration {
 
     private final Map<String, String> configNameMapper = new HashMap<>();
 
-    @Resource
+    @Resource(name = "consulConfigResource")
     private ConsulConfigResource consulConfigResource;
 
     @Resource

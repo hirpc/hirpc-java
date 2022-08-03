@@ -44,7 +44,7 @@ import java.util.Arrays;
 @ConditionalOnClass({LettuceConnectionFactory.class, RedissonClient.class})
 public class RedisRemoteAutoConfiguration {
 
-    @Resource
+    @Resource(name = "consulConfigResource")
     private ConsulConfigResource consulConfigResource;
 
     @Resource

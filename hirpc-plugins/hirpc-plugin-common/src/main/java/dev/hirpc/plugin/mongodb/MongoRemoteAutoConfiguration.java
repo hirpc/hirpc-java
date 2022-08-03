@@ -36,7 +36,7 @@ import javax.annotation.Resource;
 @ConditionalOnBean(ConsulConfigProperty.class)
 public class MongoRemoteAutoConfiguration {
 
-    @Resource
+    @Resource(name = "consulConfigResource")
     private ConsulConfigResource consulConfigResource;
 
     @Resource

@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.Resource;
@@ -61,6 +62,18 @@ public class ConsulAutoConfiguration {
     public BeanLoadAfterContainer<ConsulConfigProperty> consulConfigPropertyAfterLog() {
         log.info("[Consul配置] - 配置项已加载完成！");
         return new BeanLoadAfterContainer<ConsulConfigProperty>();
+    }
+
+    @Bean("consulConfigResource")
+    @Profile("dev")
+    public ConsulConfigResource consulCOnfigDevResource() {
+        return new ConsulConfigDevResource();
+    }
+
+    @Profile("prod")
+    @Bean("consulConfigResource")
+    public ConsulConfigResource consulConfigProdResource() {
+        return new ConsulConfigProdResource();
     }
 
 }
