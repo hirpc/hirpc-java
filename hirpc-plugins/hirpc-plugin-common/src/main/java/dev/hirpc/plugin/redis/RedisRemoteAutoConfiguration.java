@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import dev.hirpc.plugin.BeanLoadAfterContainer;
 import dev.hirpc.plugin.consul.ConsulConfigProperty;
+import dev.hirpc.plugin.consul.ConsulConfigResource;
 import dev.hirpc.plugin.utils.ConsulConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
@@ -43,14 +44,15 @@ import java.util.Arrays;
 @ConditionalOnClass({LettuceConnectionFactory.class, RedissonClient.class})
 public class RedisRemoteAutoConfiguration {
 
-    private static final String REMOTE_REDIS_CONFIG_PATH = "development/databases/redis";
+    @Resource
+    private ConsulConfigResource consulConfigResource;
 
     @Resource
     private ConsulConfigProperty consulConfigProperty;
 
     @Bean
     public RedisProperty redisProperty() {
-        String res = ConsulConfigUtil.getConfigWithAcl(consulConfigProperty, REMOTE_REDIS_CONFIG_PATH);
+        String res = ConsulConfigUtil.getConfigWithAcl(consulConfigProperty, consulConfigResource.getRemoteRedisConfigPath());
         Assert.hasText(res, "[Redis配置] - [Consult配置] - 远程Redis配置为空");
         JSONObject redisConfigObj = JSON.parseObject(res);
         String host = redisConfigObj.getString("address");

@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import dev.hirpc.plugin.BeanLoadAfterContainer;
 import dev.hirpc.plugin.consul.ConsulAutoConfiguration;
 import dev.hirpc.plugin.consul.ConsulConfigProperty;
+import dev.hirpc.plugin.consul.ConsulConfigResource;
 import dev.hirpc.plugin.utils.ConsulConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -37,9 +38,10 @@ import java.util.Map;
 @AutoConfigureAfter(ConsulAutoConfiguration.class)
 public class DBRemoteAutoConfiguration {
 
-    private Map<String, String> configNameMapper = new HashMap<>();
+    private final Map<String, String> configNameMapper = new HashMap<>();
 
-    private static final String REMOTE_MYSQL_CONFIG_PATH = "development/database/mysql";
+    @Resource
+    private ConsulConfigResource consulConfigResource;
 
     @Resource
     private ConsulConfigProperty consulConfigProperty;
@@ -60,7 +62,7 @@ public class DBRemoteAutoConfiguration {
     public DBConfig remoteDBConfig() {
         // 载入consul远程mysql配置
         log.debug("[Mysql配置] - [Consul配置] - 开始载入配置中心Mysql配置...");
-        String res = ConsulConfigUtil.getConfigWithAcl(consulConfigProperty, REMOTE_MYSQL_CONFIG_PATH);
+        String res = ConsulConfigUtil.getConfigWithAcl(consulConfigProperty, consulConfigResource.getRemoteMysqlConfigPath());
         Assert.notNull(res, "[Mysql配置] - [Consul配置] - 未获取到远程配置!");
         JSONObject dbConfigObj = JSON.parseObject(res);
         String address = dbConfigObj.getString("address");

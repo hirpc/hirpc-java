@@ -7,6 +7,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
 import dev.hirpc.plugin.BeanLoadAfterContainer;
 import dev.hirpc.plugin.consul.ConsulConfigProperty;
+import dev.hirpc.plugin.consul.ConsulConfigResource;
 import dev.hirpc.plugin.utils.ConsulConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -35,7 +36,8 @@ import javax.annotation.Resource;
 @ConditionalOnBean(ConsulConfigProperty.class)
 public class MongoRemoteAutoConfiguration {
 
-    private static final String REMOTE_MONGO_CONFIG_PATH = "development/databases/mongodb";
+    @Resource
+    private ConsulConfigResource consulConfigResource;
 
     @Resource
     private ConsulConfigProperty consulConfigProperty;
@@ -43,7 +45,7 @@ public class MongoRemoteAutoConfiguration {
     @Bean
     public MongodbProperty mongodbProperty() {
         // 载入consul远程Mongodb配置
-        String res = ConsulConfigUtil.getConfigWithAcl(consulConfigProperty, REMOTE_MONGO_CONFIG_PATH);
+        String res = ConsulConfigUtil.getConfigWithAcl(consulConfigProperty, consulConfigResource.getRemoteMongoConfigPath());
         Assert.notNull(res, "[Mongodb配置] - [Consul配置] - 未获取到远程配置!");
         JSONObject dbConfigObj = JSON.parseObject(res);
         String address = dbConfigObj.getString("address");
