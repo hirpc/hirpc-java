@@ -18,6 +18,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>dev.hirpc</groupId>
+            <artifactId>hirpc-common</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

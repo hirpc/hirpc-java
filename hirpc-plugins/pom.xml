@@ -25,12 +25,5 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>dev.hirpc</groupId>
-            <artifactId>hirpc-common</artifactId>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
 
 </project>
