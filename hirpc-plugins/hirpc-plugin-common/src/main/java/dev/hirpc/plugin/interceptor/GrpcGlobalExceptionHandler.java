@@ -1,4 +1,4 @@
-package dev.hirpc.plugin;
+package dev.hirpc.plugin.interceptor;
 
 import io.grpc.*;
 import net.devh.boot.grpc.server.interceptor.GrpcGlobalServerInterceptor;
