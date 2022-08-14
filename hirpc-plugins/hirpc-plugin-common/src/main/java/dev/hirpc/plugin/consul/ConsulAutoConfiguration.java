@@ -36,7 +36,7 @@ public class ConsulAutoConfiguration {
     @Resource
     private ApplicationContext applicationContext;
 
-    @ConditionalOnProperty(value = "spring.cloud.consul.enable", havingValue = "true")
+    @ConditionalOnProperty(value = "spring.cloud.consul.config.enable", havingValue = "true")
     @Bean
     public ConsulConfigProperty consulConfigProperty() {
         String consulKeyTemplate = "spring.cloud.consul.{}";
