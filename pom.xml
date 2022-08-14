@@ -8,6 +8,7 @@
     <artifactId>hirpc-services</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
+
     <modules>
         <module>hirpc-common</module>
         <module>hirpc-plugins</module>
@@ -24,6 +25,8 @@
         <dubbo.version>3.0.7</dubbo.version>
         <grpc.version>1.44.0</grpc.version>
         <protobuf.version>3.19.2</protobuf.version>
+        <caffeine.version>3.0.6</caffeine.version>
+        <hutool.version>5.7.15</hutool.version>
     </properties>
 
     <dependencyManagement>
@@ -146,12 +149,12 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-core</artifactId>
-                <version>5.7.15</version>
-             </dependency>
+                <version>${hutool.version}</version>
+            </dependency>
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-http</artifactId>
-                <version>5.7.15</version>
+                <version>${hutool.version}</version>
             </dependency>
 
             <!-- alibaba -->
