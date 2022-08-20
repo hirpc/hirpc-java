@@ -1,7 +1,6 @@
 package dev.hirpc.common.cache;
 
 import dev.hirpc.common.cache.operate.CacheOperate;
-import dev.hirpc.common.cache.operate.CacheOperateManage;
 import dev.hirpc.common.cache.operate.GrpcHeaderCacheOperate;
 
 /**
@@ -19,9 +18,7 @@ public enum CacheEnum implements CacheOperateManage {
         public CacheOperate getCacheOperate() {
             return new GrpcHeaderCacheOperate();
         }
-    },
-
-    ;
+    }
 
 
 }
