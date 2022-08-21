@@ -1,6 +1,6 @@
 package dev.hirpc.common.domain;
 
-import org.slf4j.helpers.MessageFormatter;
+import cn.hutool.core.util.StrUtil;
 
 import java.util.Objects;
 
@@ -30,7 +30,7 @@ public class WebResponseBuilder {
     public static WebResponse ok(Integer code, String messageFormat, Object... args) {
         String msg = null;
         if (!Objects.isNull(messageFormat)) {
-            msg = MessageFormatter.arrayFormat(messageFormat, args).getMessage();
+            msg = StrUtil.format(messageFormat, args);
         }
         return new WebResponse().setCode(code).setMsg(msg);
     }
@@ -51,7 +51,7 @@ public class WebResponseBuilder {
     public static WebResponse fail(Integer code, String messageFormat, Object... args) {
         String msg = null;
         if (!Objects.isNull(messageFormat)) {
-            msg = MessageFormatter.arrayFormat(messageFormat, args).getMessage();
+            msg = StrUtil.format(messageFormat, args);
         }
         return new WebResponse().setCode(code).setMsg(msg);
     }

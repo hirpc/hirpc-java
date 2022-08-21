@@ -1,7 +1,7 @@
 package dev.hirpc.common.exceptions;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.helpers.MessageFormatter;
 
 import java.util.Objects;
 
@@ -40,7 +40,7 @@ public class BasicException extends RuntimeException{
     @Override
     public String getMessage() {
         if (!Objects.isNull(this.messageFormat)) {
-            this.message = MessageFormatter.arrayFormat(messageFormat, args).getMessage();
+            this.message = StrUtil.format(messageFormat, args);
         }
         return this.message;
     }
